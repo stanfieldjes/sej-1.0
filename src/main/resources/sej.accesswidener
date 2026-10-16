@@ -1,0 +1,5 @@
+accessWidener v1 named
+
+accessible method net/minecraft/fluid/FlowableFluid getUpdatedState (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Lnet/minecraft/fluid/FluidState;
+accessible method net/minecraft/fluid/FlowableFluid tryFlow (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/fluid/FluidState;)V
+accessible method net/minecraft/fluid/FlowableFluid flowToSides (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/fluid/FluidState;Lnet/minecraft/block/BlockState;)V

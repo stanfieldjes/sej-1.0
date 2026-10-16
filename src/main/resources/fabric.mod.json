@@ -1,0 +1,42 @@
+{
+	"schemaVersion": 1,
+	"id": "sej",
+	"version": "${version}",
+	"name": "Sandbox: Endless Journey",
+	"description": "Tweaks for the SEJ modpack",
+	"authors": [
+		"sej_"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/sej/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+          "dev.sej.Sej",
+          "dev.sej.EquipmentModifiers"
+		],
+		"client": [
+			"dev.sej.SejClient"
+		]
+	},
+	"mixins": [
+		"sej.mixins.json",
+		{
+			"config": "sej.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*",
+		"sodium": "*",
+		"voicechat": "*"
+	},
+	"accessWidener": "sej.accesswidener"
+}
