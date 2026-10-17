@@ -16,6 +16,7 @@
     "DisableKnockbackMobsOnlyMixin",
     "EquipmentDurabilityMixin",
     "FenceBlockMixin",
+    "FishingBobberMixin",
     "FlowableFluidMixin",
     "FurnaceShiftClickMixin",
     "FurnaceSlotMixin",

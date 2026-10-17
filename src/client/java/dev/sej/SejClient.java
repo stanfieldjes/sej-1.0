@@ -20,6 +20,7 @@ public class SejClient implements ClientModInitializer {
 		ItemTextureSwaps.register();
 		UniformDyes.register();
 		EntityRendererRegistry.register(ThrowableBricks.BRICK_ENTITY, FlyingItemEntityRenderer::new);
+		SlimeRod.register();
 
 		BlockRenderLayerMap.INSTANCE.putBlock(GunpowderTrailBlock.BLOCK, RenderLayer.getCutout());
 		ColorProviderRegistry.BLOCK.register(

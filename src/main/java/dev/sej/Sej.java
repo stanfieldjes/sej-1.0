@@ -120,6 +120,6 @@ public class Sej implements ModInitializer {
 		MobSpawnEggItem.register();
 		PackRules.register();
 
-		LOGGER.info("Betta Beta initialized");
+		LOGGER.info("SEJ initialized");
 	}
 }
