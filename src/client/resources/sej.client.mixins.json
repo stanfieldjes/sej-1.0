@@ -15,6 +15,7 @@
     "InGameHudInfoMixin",
     "InventoryItemListMixin",
     "InventoryScreenMixin",
+    "ItemEntityGroundSizeMixin",
     "ItemStackMixin",
     "KeyBindingAccessor",
     "KeyboardMixin",
