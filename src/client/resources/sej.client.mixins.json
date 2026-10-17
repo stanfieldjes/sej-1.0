@@ -25,7 +25,9 @@
     "SaveVersionInfoMixin",
     "SleepingChatScreenMixin",
     "SpiderRenderScaleMixin",
-    "TitleScreenMixin"
+    "TitleScreenMixin",
+    "TranslationStorageMixin",
+    "WindowTitleMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,33 +1,29 @@
 package dev.sej.mixin.client;
 
+import dev.sej.SocialButton;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/**
- * While chat is open, outlines the chat area and lets you drag its top edge (height),
- * right edge (width) or top-right corner (both). The sizes go into the normal
- * Chat Width / Chat Height options, so they save with the rest of the settings.
- *
- * Also adds a Groups button (bottom right, above the text box) that opens
- * Simple Voice Chat's group screen.
- */
 @Mixin(ChatScreen.class)
 public abstract class ChatScreenMixin extends Screen {
+
+    @Shadow protected TextFieldWidget chatField;
 
     /** How close (in GUI pixels) the mouse has to be to an edge to grab it. */
     @Unique private static final int GRAB = 3;
@@ -43,8 +39,6 @@ public abstract class ChatScreenMixin extends Screen {
 
     /** Simple Voice Chat's "Groups" key binding. */
     @Unique private static final String SVC_GROUP_KEY = "key.voice_chat_group";
-    @Unique private static final int GROUPS_WIDTH = 60;
-    @Unique private static final int GROUPS_HEIGHT = 20;
 
     @Unique private boolean sej$dragWidth;
     @Unique private boolean sej$dragHeight;
@@ -81,27 +75,30 @@ public abstract class ChatScreenMixin extends Screen {
     }
 
     @Inject(method = "init", at = @At("TAIL"))
-    private void sej$addGroupsButton(CallbackInfo ci) {
-        KeyBinding groupKey = sej$findKey(SVC_GROUP_KEY);
+    private void sej$addSocialButton(CallbackInfo ci) {
+        KeyBinding groupKey = sej$findGroupKey();
         if (groupKey == null) return; // Simple Voice Chat not installed
 
-        // Right-hand side, just above the chat text box.
-        this.addDrawableChild(ButtonWidget
-                .builder(Text.translatable("sej.chat.groups"), b -> {
+        // Shorten the text box so long messages scroll before they reach the icon.
+        this.chatField.setWidth(this.chatField.getWidth() - SocialButton.SIZE - 4);
+
+        // Right end of the input bar (vanilla draws the bar from height-14 to height-2).
+        this.addDrawableChild(new SocialButton(
+                this.width - 2 - SocialButton.SIZE, this.height - 14,
+                Text.translatable("sej.chat.groups"),
+                () -> {
                     // Close chat, then press Simple Voice Chat's Groups key for one tick.
                     // Its own handler then opens your group, the join screen, or says groups are off.
                     MinecraftClient.getInstance().setScreen(null);
                     KeyBindingAccessor key = (KeyBindingAccessor) groupKey;
                     key.sej$setTimesPressed(key.sej$getTimesPressed() + 1);
-                })
-                .dimensions(this.width - GROUPS_WIDTH - 2, this.height - 14 - 2 - GROUPS_HEIGHT, GROUPS_WIDTH, GROUPS_HEIGHT)
-                .build());
+                }));
     }
 
     @Unique
-    private static KeyBinding sej$findKey(String translationKey) {
+    private static KeyBinding sej$findGroupKey() {
         for (KeyBinding binding : MinecraftClient.getInstance().options.allKeys) {
-            if (binding.getTranslationKey().equals(translationKey)) return binding;
+            if (binding.getTranslationKey().equals(SVC_GROUP_KEY)) return binding;
         }
         return null;
     }

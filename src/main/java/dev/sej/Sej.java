@@ -118,6 +118,7 @@ public class Sej implements ModInitializer {
 		ThrowableBricks.register();
 		GunpowderTrailBlock.register();
 		MobSpawnEggItem.register();
+		PackRules.register();
 
 		LOGGER.info("Betta Beta initialized");
 	}

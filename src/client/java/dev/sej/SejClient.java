@@ -17,6 +17,7 @@ public class SejClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		BowPredicateInit.register();
+		ItemTextureSwaps.register();
 		UniformDyes.register();
 		EntityRendererRegistry.register(ThrowableBricks.BRICK_ENTITY, FlyingItemEntityRenderer::new);
 

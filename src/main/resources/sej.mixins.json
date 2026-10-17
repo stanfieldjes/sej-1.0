@@ -3,7 +3,6 @@
   "package": "dev.sej.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "PlayerEntityMixin",
     "ArmorFireTickMixin",
     "ArmorKnockbackMixin",
     "BlockItemMixin",
@@ -21,6 +20,7 @@
     "FurnaceShiftClickMixin",
     "FurnaceSlotMixin",
     "FurnaceSmeltingMixin",
+    "GoldenAppleMixin",
     "GoldenToolsSilkTouchMixin",
     "GrassBlockMixin",
     "GunpowderDispenserMixin",
@@ -43,6 +43,7 @@
     "PlayerArmorMixin",
     "PlayerEntityMixin",
     "ProjectileEntityMixin",
+    "RecipeManagerMixin",
     "ServerPlayerEntityMixin",
     "ServerWorldLightningMixin",
     "SkeletonEntityMixin",
