@@ -1,0 +1,6 @@
+{
+  "feature": "minecraft:sea_pickle",
+  "placement": [
+    {"type": "minecraft:count", "count": 0}
+  ]
+}

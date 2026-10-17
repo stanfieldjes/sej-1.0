@@ -1,0 +1,6 @@
+{
+  "feature": "minecraft:trees_grove",
+  "placement": [
+    {"type": "minecraft:count", "count": 0}
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "feature": "minecraft:jungle_tree",
+  "placement": [
+    {"type": "minecraft:count", "count": 0}
+  ]
+}

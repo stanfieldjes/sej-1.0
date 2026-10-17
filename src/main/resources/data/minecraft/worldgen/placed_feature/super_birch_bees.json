@@ -1,0 +1,6 @@
+{
+  "feature": "minecraft:super_birch_bees",
+  "placement": [
+    {"type": "minecraft:count", "count": 0}
+  ]
+}

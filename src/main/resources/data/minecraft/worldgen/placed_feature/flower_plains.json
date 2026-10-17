@@ -1,0 +1,6 @@
+{
+  "feature": "minecraft:flower_plain",
+  "placement": [
+    {"type": "minecraft:count", "count": 0}
+  ]
+}

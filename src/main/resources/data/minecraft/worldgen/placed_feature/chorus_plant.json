@@ -1,0 +1,6 @@
+{
+  "feature": "minecraft:chorus_plant",
+  "placement": [
+    {"type": "minecraft:count", "count": 0}
+  ]
+}

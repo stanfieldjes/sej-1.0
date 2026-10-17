@@ -1,0 +1,6 @@
+{
+  "feature": "minecraft:dripstone_cluster",
+  "placement": [
+    {"type": "minecraft:count", "count": 0}
+  ]
+}
