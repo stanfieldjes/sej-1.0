@@ -14,7 +14,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,20 +75,44 @@ public final class SlimeRod {
 
         Slimed(BakedModel wrapped) {
             this.wrapped = wrapped;
-            for (BakedQuad quad : wrapped.getQuads(null, null, Random.create())) {
-                this.quads.add(quad.getColorIndex() == 1 ? push(quad) : quad);
+            List<BakedQuad> all = wrapped.getQuads(null, null, Random.create());
+
+            // Size of the glob, from its edge faces (the front and back faces cover the whole 16x16).
+            float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE, maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
+            for (BakedQuad quad : all) {
+                if (quad.getColorIndex() != 1 || quad.getFace().getAxis() == Direction.Axis.Z) continue;
+                int[] data = quad.getVertexData();
+                int stride = data.length / 4;
+                for (int v = 0; v < 4; v++) {
+                    float x = Float.intBitsToFloat(data[v * stride]);
+                    float y = Float.intBitsToFloat(data[v * stride + 1]);
+                    minX = Math.min(minX, x);
+                    maxX = Math.max(maxX, x);
+                    minY = Math.min(minY, y);
+                    maxY = Math.max(maxY, y);
+                }
+            }
+
+            boolean found = minX <= maxX;
+            float cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+            // Grow the glob by PUSH on every side as one solid piece, so its faces stay joined.
+            float sx = found ? 1 + PUSH / Math.max((maxX - minX) / 2, 0.01F) : 1;
+            float sy = found ? 1 + PUSH / Math.max((maxY - minY) / 2, 0.01F) : 1;
+            float sz = 1 + PUSH / (1 / 32F); // generated items are 1/16 thick
+
+            for (BakedQuad quad : all) {
+                this.quads.add(quad.getColorIndex() == 1 && found ? grow(quad, cx, cy, sx, sy, sz) : quad);
             }
         }
 
-        private static BakedQuad push(BakedQuad quad) {
+        private static BakedQuad grow(BakedQuad quad, float cx, float cy, float sx, float sy, float sz) {
             int[] data = quad.getVertexData().clone();
             int stride = data.length / 4;
-            Vec3i out = quad.getFace().getVector();
             for (int v = 0; v < 4; v++) {
                 int i = v * stride;
-                data[i] = Float.floatToRawIntBits(Float.intBitsToFloat(data[i]) + out.getX() * PUSH);
-                data[i + 1] = Float.floatToRawIntBits(Float.intBitsToFloat(data[i + 1]) + out.getY() * PUSH);
-                data[i + 2] = Float.floatToRawIntBits(Float.intBitsToFloat(data[i + 2]) + out.getZ() * PUSH);
+                data[i] = Float.floatToRawIntBits(cx + (Float.intBitsToFloat(data[i]) - cx) * sx);
+                data[i + 1] = Float.floatToRawIntBits(cy + (Float.intBitsToFloat(data[i + 1]) - cy) * sy);
+                data[i + 2] = Float.floatToRawIntBits(0.5F + (Float.intBitsToFloat(data[i + 2]) - 0.5F) * sz);
             }
             return new BakedQuad(data, quad.getColorIndex(), quad.getFace(), quad.getSprite(), quad.hasShade());
         }

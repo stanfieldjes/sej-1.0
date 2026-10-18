@@ -1,6 +1,7 @@
 package dev.sej.mixin;
 
 import dev.sej.SlimeHook;
+import dev.sej.SlimedBobber;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -27,11 +28,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /** Slime ball grappling and mob pulling for the normal fishing rod. See SlimeHook. */
 @Mixin(FishingBobberEntity.class)
-public abstract class FishingBobberMixin extends ProjectileEntity {
+public abstract class FishingBobberMixin extends ProjectileEntity implements SlimedBobber {
 
     /** True while the bobber is stuck to a block. Synced so the client holds it still too. */
     @Unique
     private static final TrackedData<Boolean> SEJ_STUCK =
+            DataTracker.registerData(FishingBobberEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+
+    /** True while the bobber should look slimed. Synced so everyone sees it. */
+    @Unique
+    private static final TrackedData<Boolean> SEJ_SLIMED =
             DataTracker.registerData(FishingBobberEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
     @Shadow public abstract @Nullable PlayerEntity getPlayerOwner();
@@ -45,12 +51,25 @@ public abstract class FishingBobberMixin extends ProjectileEntity {
     @Inject(method = "initDataTracker", at = @At("TAIL"))
     private void sej$trackStuck(CallbackInfo ci) {
         this.dataTracker.startTracking(SEJ_STUCK, false);
+        this.dataTracker.startTracking(SEJ_SLIMED, false);
+    }
+
+    @Override
+    public boolean sej$isSlimed() {
+        return this.dataTracker.get(SEJ_SLIMED);
     }
 
     /** Stick to the first block hit (not water) if the owner has a slime ball. */
     @Inject(method = "tick", at = @At("TAIL"))
     private void sej$stick(CallbackInfo ci) {
         if (this.isRemoved()) return;
+
+        boolean inWater = this.getWorld().getFluidState(this.getBlockPos()).isIn(FluidTags.WATER);
+        PlayerEntity owner = this.getPlayerOwner();
+        if (!this.getWorld().isClient) {
+            // Slimed look: owner has a slime ball and it hasn't landed in water.
+            this.dataTracker.set(SEJ_SLIMED, owner != null && !inWater && SlimeHook.hasSlime(owner));
+        }
 
         if (this.dataTracker.get(SEJ_STUCK)) {
             if (this.getHookedEntity() != null) {
@@ -65,9 +84,7 @@ public abstract class FishingBobberMixin extends ProjectileEntity {
 
         if (this.getWorld().isClient || this.getHookedEntity() != null) return;
         if (!this.horizontalCollision && !this.verticalCollision) return;
-        if (this.getWorld().getFluidState(this.getBlockPos()).isIn(FluidTags.WATER)) return;
-
-        PlayerEntity owner = this.getPlayerOwner();
+        if (inWater) return;
         if (owner == null || !SlimeHook.hasSlime(owner)) return;
 
         this.dataTracker.set(SEJ_STUCK, true);

@@ -10,6 +10,7 @@
     "CreateWorldScreenMixin",
     "DeathScreenMixin",
     "DrawContextInvoker",
+    "FishingBobberRendererMixin",
     "GameMenuScreenMixin",
     "HandledScreenAccessor",
     "InGameHudInfoMixin",
