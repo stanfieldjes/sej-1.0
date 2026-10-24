@@ -955,7 +955,8 @@
     "minecraft:sponge",
     "minecraft:red_bed",
     "minecraft:tnt",
-    "minecraft:item_frame"
+    "minecraft:item_frame",
+    "minecraft:cauldron"
   ],
   "inputs": [
     "minecraft:beetroot",
