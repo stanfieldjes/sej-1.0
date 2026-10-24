@@ -956,7 +956,8 @@
     "minecraft:red_bed",
     "minecraft:tnt",
     "minecraft:item_frame",
-    "minecraft:cauldron"
+    "minecraft:cauldron",
+    "minecraft:flower_pot"
   ],
   "inputs": [
     "minecraft:beetroot",
